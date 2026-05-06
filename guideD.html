@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>受付求人票 操作ガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080d1c;
+  --bg2: #0c1428;
+  --bg3: #101c38;
+  --surface: #162040;
+  --surface2: #1c2a52;
+  --border: #253a68;
+  --border2: #2e4880;
+  --accent: #00d4ff;
+  --accent2: #0099cc;
+  --accent3: #00ff88;
+  --accent4: #7b5ff5;
+  --text: #e4eaf6;
+  --text2: #8aaac8;
+  --text3: #4a6380;
+  --warn: #ffd740;
+  --warn-bg: rgba(255,215,64,0.08);
+  --green: #00e676;
+  --green-bg: rgba(0,230,118,0.08);
+  --red: #ff5252;
+  --coral: #ff7043;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 80px 40px 60px;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a1530 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(0,212,255,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.hero h1 em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.hero p {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hero-stat .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--accent3);
+}
+
+.hero-stat .lbl {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.hero-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  align-self: center;
+}
+
+/* ── NAV ── */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  background: rgba(8,13,28,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-bar::-webkit-scrollbar { display: none; }
+
+.nav-item {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.nav-item:hover { color: var(--accent); border-bottom-color: rgba(0,212,255,0.4); }
+.nav-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── MAIN ── */
+.main { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── SECTION ── */
+.section {
+  padding: 60px 0 0;
+  scroll-margin-top: 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+
+/* ── CARDS ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+
+.card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+.card-icon.blue { background: rgba(0,153,204,0.15); color: var(--accent); }
+.card-icon.green { background: rgba(0,230,118,0.12); color: var(--green); }
+.card-icon.purple { background: rgba(123,95,245,0.15); color: var(--accent4); }
+.card-icon.warn { background: rgba(255,215,64,0.1); color: var(--warn); }
+.card-icon.coral { background: rgba(255,112,67,0.12); color: var(--coral); }
+
+.card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; gap: 0; }
+
+.step {
+  display: flex;
+  gap: 20px;
+  position: relative;
+}
+
+.step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 2px solid var(--accent2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--accent);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.step-line {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(to bottom, var(--border2), var(--border));
+  margin: 6px 0;
+  min-height: 24px;
+}
+
+.step:last-child .step-line { display: none; }
+
+.step-body {
+  padding: 0 0 32px;
+  flex: 1;
+}
+
+.step-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  margin-top: 6px;
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.callout.info {
+  background: rgba(0,212,255,0.07);
+  border: 1px solid rgba(0,212,255,0.2);
+  color: var(--text2);
+}
+.callout.info .callout-icon { color: var(--accent); }
+
+.callout.warn {
+  background: var(--warn-bg);
+  border: 1px solid rgba(255,215,64,0.2);
+  color: var(--text2);
+}
+.callout.warn .callout-icon { color: var(--warn); }
+
+.callout.success {
+  background: var(--green-bg);
+  border: 1px solid rgba(0,230,118,0.2);
+  color: var(--text2);
+}
+.callout.success .callout-icon { color: var(--green); }
+
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── BADGE TABLE ── */
+.badge-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 16px 0;
+}
+
+.badge-table th {
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-bottom: 2px solid var(--border2);
+  color: var(--text3);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  font-weight: 600;
+}
+
+.badge-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: middle;
+}
+
+.badge-table tr:last-child td { border-bottom: none; }
+.badge-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.badge-green { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+.badge-red { background: rgba(255,82,82,0.12); color: var(--red); border: 1px solid rgba(255,82,82,0.3); }
+.badge-yellow { background: rgba(255,215,64,0.1); color: var(--warn); border: 1px solid rgba(255,215,64,0.25); }
+.badge-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.25); }
+.badge-gray { background: rgba(74,99,128,0.2); color: var(--text3); border: 1px solid var(--border); }
+.badge-purple { background: rgba(123,95,245,0.12); color: var(--accent4); border: 1px solid rgba(123,95,245,0.25); }
+
+/* ── COLUMN TABLE ── */
+.col-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.col-table th {
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-bottom: 2px solid var(--border2);
+  color: var(--text3);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  font-weight: 600;
+}
+
+.col-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.col-table tr:last-child td { border-bottom: none; }
+.col-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.col-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  background: rgba(0,212,255,0.06);
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.col-desc { font-size: 12px; color: var(--text2); }
+
+/* ── UI MOCKUP ── */
+.ui-mock {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+  font-size: 12px;
+}
+
+.mock-header {
+  background: linear-gradient(90deg, #060d1f, #0a1530);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mock-logo {
+  width: 24px; height: 24px;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #000;
+}
+
+.mock-title { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); }
+.mock-title em { color: var(--accent); font-style: normal; }
+.mock-sp { flex: 1; }
+
+.mock-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  cursor: default;
+}
+
+.mock-btn.accent {
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  border: none;
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,212,255,0.3);
+}
+
+.mock-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  padding: 3px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.mock-count em { color: var(--accent); font-style: normal; }
+
+.mock-search-bar {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mock-input {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: var(--text2);
+  font-size: 11px;
+  flex: 1;
+}
+
+.mock-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: var(--text2);
+  font-size: 11px;
+  width: 100px;
+}
+
+.mock-table-head {
+  display: grid;
+  grid-template-columns: 50px 80px 120px 1fr 80px 70px 70px;
+  background: var(--bg3);
+  border-bottom: 2px solid var(--accent2);
+  padding: 0 16px;
+}
+
+.mock-th {
+  padding: 8px 6px;
+  font-size: 10px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.mock-th .sort { font-size: 9px; color: var(--accent); }
+
+.mock-row {
+  display: grid;
+  grid-template-columns: 50px 80px 120px 1fr 80px 70px 70px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+.mock-row:hover { background: var(--surface); }
+.mock-td { padding: 8px 6px; font-size: 11px; color: var(--text2); }
+.mock-td.green { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+
+.mock-footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mock-page-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: default;
+}
+.mock-page-btn.active {
+  background: var(--accent2);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 700;
+}
+
+.mock-page-info { font-size: 10px; color: var(--text3); margin-right: 6px; }
+
+/* ── KEYBOARD SHORTCUT ── */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+  margin: 0 2px;
+}
+
+/* ── HIGHLIGHT BOX ── */
+.highlight {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 18px;
+  margin: 16px 0;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.highlight strong { color: var(--text); }
+
+/* ── FAQ ── */
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.faq-q {
+  padding: 16px 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  transition: background 0.15s;
+  user-select: none;
+}
+.faq-q:hover { background: var(--surface2); }
+.faq-arrow { font-size: 12px; color: var(--text3); transition: transform 0.2s; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+  background: var(--bg2);
+}
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding: 16px 18px;
+}
+
+/* ── FLOW DIAGRAM ── */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 20px 0;
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+.flow-node {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+.flow-node.active { border-color: var(--accent); background: rgba(0,212,255,0.08); }
+.flow-node .fn-label { font-size: 11px; color: var(--text3); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+.flow-node .fn-val { font-size: 13px; color: var(--text); font-weight: 600; }
+.flow-node.active .fn-val { color: var(--accent); }
+
+.flow-arrow { color: var(--text3); font-size: 18px; padding: 0 6px; flex-shrink: 0; }
+
+/* ── SCROLL ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── BACK TOP ── */
+.back-top {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 44px; height: 44px;
+  background: var(--accent2);
+  border: none;
+  border-radius: 50%;
+  color: #000;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,212,255,0.4);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 200;
+}
+.back-top.show { opacity: 1; pointer-events: all; }
+.back-top:hover { transform: translateY(-2px); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .hero { padding: 48px 20px 40px; }
+  .main { padding: 0 16px 60px; }
+  .nav-bar { padding: 0 16px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .mock-table-head, .mock-row { grid-template-columns: 40px 70px 1fr 70px 60px; }
+  .mock-table-head > *:nth-child(3),
+  .mock-row > *:nth-child(3) { display: none; }
+  .mock-table-head > *:nth-child(6),
+  .mock-row > *:nth-child(6) { display: none; }
+  .flow { gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">操作マニュアル v2025</div>
+  <h1>受付求人票<br><em>操作ガイド</em></h1>
+  <p>曽於高等学校 受付求人票システムの全機能を分かりやすく解説します。<br>検索・ソート・表示切替など、すべての操作をここで確認できます。</p>
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <span class="num">2,949</span>
+      <span class="lbl">登録求人数</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">18</span>
+      <span class="lbl">表示カラム数</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">50</span>
+      <span class="lbl">1ページ表示件数</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <span class="num">8</span>
+      <span class="lbl">業種分類</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar" id="nav">
+  <div class="nav-item active" data-sec="sec1">📋 画面構成</div>
+  <div class="nav-item" data-sec="sec2">🔍 検索・絞込</div>
+  <div class="nav-item" data-sec="sec3">↕ ソート</div>
+  <div class="nav-item" data-sec="sec4">📊 カラム詳細</div>
+  <div class="nav-item" data-sec="sec5">🏷 バッジ表示</div>
+  <div class="nav-item" data-sec="sec6">📱 帳票形式</div>
+  <div class="nav-item" data-sec="sec7">📄 ページ操作</div>
+  <div class="nav-item" data-sec="sec8">❓ よくある質問</div>
+</nav>
+
+<div class="main">
+
+  <!-- ── SECTION 1: 画面構成 ── -->
+  <section class="section" id="sec1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">画面構成</div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon blue">🗂</div>
+        <h3>ヘッダー</h3>
+        <p>タイトル・帳票切替ボタン・全件数が表示されます。常に最上部に固定されています。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon purple">🔍</div>
+        <h3>検索パネル</h3>
+        <p>「絞り込み検索」ボタンで展開します。各種フィルター条件を入力してデータを絞り込めます。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon green">📋</div>
+        <h3>テーブル一覧</h3>
+        <p>18カラムの求人情報を一覧表示します。列ヘッダーは固定されスクロール時も常に表示されます。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon warn">📄</div>
+        <h3>フッター（ページ）</h3>
+        <p>ページネーションが固定表示されます。1ページあたり50件を表示します。</p>
+      </div>
+    </div>
+
+    <div class="ui-mock">
+      <div class="mock-header">
+        <div class="mock-logo">曽</div>
+        <div class="mock-title">曽於高等学校 <em>【受付求人票】</em></div>
+        <div class="mock-sp"></div>
+        <div class="mock-btn">📊 帳票形式</div>
+        <div class="mock-count">全 <em>2,949</em> 件</div>
+      </div>
+      <div class="mock-search-bar">
+        <div class="mock-btn accent">🔍 絞り込み検索</div>
+        <div class="mock-input" style="font-size:11px; color:var(--text3);">求人番号（前方一致）</div>
+        <div class="mock-input" style="font-size:11px; color:var(--text3);">事業所名</div>
+        <div class="mock-select">業種8種 ▾</div>
+      </div>
+      <div class="mock-table-head">
+        <div class="mock-th">独自番号 <span class="sort">▲</span></div>
+        <div class="mock-th">安定所名</div>
+        <div class="mock-th">求人番号</div>
+        <div class="mock-th">事業所名</div>
+        <div class="mock-th">月額賃金</div>
+        <div class="mock-th">賞与</div>
+        <div class="mock-th">週休２日</div>
+      </div>
+      <div class="mock-row">
+        <div class="mock-td" style="color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:11px;">1</div>
+        <div class="mock-td">大隅</div>
+        <div class="mock-td">46080-85159</div>
+        <div class="mock-td">㈱ナンチク</div>
+        <div class="mock-td green">¥172,200</div>
+        <div class="mock-td"><span class="badge badge-green" style="font-size:10px;">あり</span></div>
+        <div class="mock-td"><span class="badge badge-yellow" style="font-size:10px;">その他</span></div>
+      </div>
+      <div class="mock-row">
+        <div class="mock-td" style="color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:11px;">2</div>
+        <div class="mock-td">大隅</div>
+        <div class="mock-td">46080-86259</div>
+        <div class="mock-td">㈱ナンチク</div>
+        <div class="mock-td green">¥172,200</div>
+        <div class="mock-td"><span class="badge badge-green" style="font-size:10px;">あり</span></div>
+        <div class="mock-td"><span class="badge badge-yellow" style="font-size:10px;">その他</span></div>
+      </div>
+      <div class="mock-row" style="opacity:0.5;">
+        <div class="mock-td" style="color:var(--text3); font-family:'JetBrains Mono',monospace; font-size:11px;">3</div>
+        <div class="mock-td">鹿屋</div>
+        <div class="mock-td">46030-80959</div>
+        <div class="mock-td">国基建設㈱</div>
+        <div class="mock-td green">¥180,000</div>
+        <div class="mock-td"><span class="badge badge-green" style="font-size:10px;">あり</span></div>
+        <div class="mock-td"><span class="badge badge-yellow" style="font-size:10px;">その他</span></div>
+      </div>
+      <div class="mock-footer">
+        <div class="mock-page-info">1-50 / 2,949件</div>
+        <div class="mock-page-btn">«</div>
+        <div class="mock-page-btn">‹</div>
+        <div class="mock-page-btn active">1</div>
+        <div class="mock-page-btn">2</div>
+        <div class="mock-page-btn">3</div>
+        <div class="mock-page-btn">…</div>
+        <div class="mock-page-btn">59</div>
+        <div class="mock-page-btn">›</div>
+        <div class="mock-page-btn">»</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <span>カラムヘッダー行はテーブルを縦スクロールしても常に画面上部に固定表示されます。どの行を見ていても列名を確認できます。</span>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: 検索・絞込 ── -->
+  <section class="section" id="sec2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">検索・絞込機能</div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">「絞り込み検索」ボタンをクリック</div>
+          <div class="step-desc">ヘッダー直下の<strong style="color:var(--accent);">シアン色のボタン</strong>をクリックすると検索パネルがスライドして展開します。再度クリックすると閉じます。</div>
+          <div class="callout info">
+            <span class="callout-icon">💡</span>
+            <span>検索パネルを閉じてもフィルターは維持されます。絞込件数はパネル右端に常時表示されます。</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">検索条件を入力</div>
+          <div class="step-desc">各フィールドに条件を入力します。<strong style="color:var(--text);">入力と同時にリアルタイムで絞り込まれます</strong>（検索ボタンは不要）。複数条件はすべてAND検索です。</div>
+          <table class="badge-table">
+            <thead>
+              <tr>
+                <th style="width:140px;">フィールド</th>
+                <th>検索方式</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="col-key">求人番号</span></td>
+                <td><span class="badge badge-blue">前方一致</span></td>
+                <td>入力した文字列で始まる求人番号を絞り込みます。例：「46080」で大隅安定所の求人のみ表示</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">事業所名</span></td>
+                <td><span class="badge badge-purple">曖昧検索</span></td>
+                <td>入力した文字列を含む事業所名を検索します（大文字・小文字を区別しません）</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">所在地</span></td>
+                <td><span class="badge badge-purple">曖昧検索</span></td>
+                <td>市区町村名など一部の文字列でも検索できます</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">就業場所</span></td>
+                <td><span class="badge badge-purple">曖昧検索</span></td>
+                <td>実際の勤務地を絞り込みます</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">職種</span></td>
+                <td><span class="badge badge-purple">曖昧検索</span></td>
+                <td>職種名の一部でも検索できます。例：「事務」「技術」など</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">業種8種</span></td>
+                <td><span class="badge badge-green">プルダウン</span></td>
+                <td>8つの業種分類から1つを選択します</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">産業分類</span></td>
+                <td><span class="badge badge-green">プルダウン</span></td>
+                <td>239の産業分類から1つを選択します</td>
+              </tr>
+              <tr>
+                <td><span class="col-key">年間休日数</span></td>
+                <td><span class="badge badge-yellow">範囲指定</span></td>
+                <td>下限〜上限の日数で絞り込みます。片側だけの入力も可能です</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">絞込結果を確認</div>
+          <div class="step-desc">検索パネル右端の「絞込結果：<strong style="color:var(--accent3);">N 件</strong>」とヘッダーの件数表示が更新されます。</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">リセット</div>
+          <div class="step-desc">「リセット」ボタンをクリックするとすべての検索条件がクリアされ、全件表示に戻ります。</div>
+          <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>リセットボタンはすべての条件を一括クリアします。個別の条件を消したい場合は、該当フィールドを直接消去してください。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: ソート ── -->
+  <section class="section" id="sec3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">ソート（並べ替え）</div>
+    </div>
+
+    <div class="highlight">
+      <strong>デフォルトは「独自番号」の昇順</strong>で表示されます。列ヘッダーをクリックすることで任意の列で昇順・降順に並べ替えができます。
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">列ヘッダーをクリック → 昇順ソート</div>
+          <div class="step-desc">ソートしたい列のヘッダー部分をクリックします。ヘッダーがシアン色に変わり、<span style="color:var(--accent);">▲</span> アイコンが表示されます（昇順）。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">同じ列を再クリック → 降順ソート</div>
+          <div class="step-desc">もう一度クリックすると降順に切り替わります。<span style="color:var(--accent);">▼</span> アイコンが表示されます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">別の列をクリック → その列で昇順ソート</div>
+          <div class="step-desc">異なる列をクリックすると、その列の昇順でソートし直します。ソートはすべての18カラムで動作します。</div>
+          <div class="callout success">
+            <span class="callout-icon">✅</span>
+            <span>月額賃金の降順でソートすると給与の高い求人から表示できます。年間休日数の降順で休日が多い求人を上位に表示することも可能です。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-node">
+        <div class="fn-label">未ソート</div>
+        <div class="fn-val">↕</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node active">
+        <div class="fn-label">1回クリック</div>
+        <div class="fn-val">▲ 昇順</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node active">
+        <div class="fn-label">再クリック</div>
+        <div class="fn-val">▼ 降順</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="fn-label">別列クリック</div>
+        <div class="fn-val">▲ 昇順</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4: カラム詳細 ── -->
+  <section class="section" id="sec4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">カラム詳細</div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <span>列ヘッダーの右端にある<strong style="color:var(--text);">区切り線をマウスでドラッグ</strong>すると列幅を自由に変更できます。</span>
+    </div>
+
+    <table class="col-table" style="margin-top:16px;">
+      <thead>
+        <tr>
+          <th style="width:100px;">#</th>
+          <th style="width:130px;">カラム名</th>
+          <th>内容・説明</th>
+          <th style="width:80px;">表示形式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="col-key">独自番号</span></td><td>独自番号</td><td class="col-desc">システム管理用の連番。デフォルトソートキーとして使用されます。</td><td><span class="badge badge-gray" style="font-size:10px;">数値</span></td></tr>
+        <tr><td><span class="col-key">安定所名</span></td><td>安定所名</td><td class="col-desc">管轄するハローワーク（公共職業安定所）の名称。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">求人番号</span></td><td>求人番号</td><td class="col-desc">ハローワークが発番する固有の求人番号。「46080-XXXXX」形式。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">事業所名</span></td><td>事業所名</td><td class="col-desc">求人を出している会社・事業所の正式名称。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">所在地</span></td><td>所在地</td><td class="col-desc">事業所の住所（都道府県・市区町村）。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">資本金</span></td><td>資本金</td><td class="col-desc">会社の資本金額。規模感の参考に。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">社員数数</span></td><td>社員数</td><td class="col-desc">事業所全体の従業員数（名）。</td><td><span class="badge badge-gray" style="font-size:10px;">数値</span></td></tr>
+        <tr><td><span class="col-key">就業場所人数</span></td><td>就業場所人数</td><td class="col-desc">実際の就業場所（勤務地）における在籍人数（名）。</td><td><span class="badge badge-gray" style="font-size:10px;">数値</span></td></tr>
+        <tr><td><span class="col-key">求人数</span></td><td>求人数</td><td class="col-desc">この求人での採用予定人数（名）。</td><td><span class="badge badge-gray" style="font-size:10px;">数値</span></td></tr>
+        <tr><td><span class="col-key">就業場所</span></td><td>就業場所</td><td class="col-desc">実際の勤務地（都道府県）。事業所の所在地と異なる場合があります。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">月額賃金</span></td><td>月額賃金</td><td class="col-desc">基本給（円）。視認性のため緑色で強調表示されます。</td><td><span class="badge badge-green" style="font-size:10px;">¥ 緑色</span></td></tr>
+        <tr><td><span class="col-key">賞与</span></td><td>賞与</td><td class="col-desc">賞与（ボーナス）の有無。バッジで色分け表示。</td><td><span class="badge badge-green" style="font-size:10px;">バッジ</span></td></tr>
+        <tr><td><span class="col-key">時間外平均</span></td><td>時間外平均</td><td class="col-desc">月平均の残業時間（時間）。</td><td><span class="badge badge-gray" style="font-size:10px;">数値(h)</span></td></tr>
+        <tr><td><span class="col-key">週休２日制</span></td><td>週休２日制</td><td class="col-desc">週休2日の区分。バッジで色分け表示。</td><td><span class="badge badge-yellow" style="font-size:10px;">バッジ</span></td></tr>
+        <tr><td><span class="col-key">年間休日数</span></td><td>年間休日数</td><td class="col-desc">年間の休日日数。52〜192日の範囲。</td><td><span class="badge badge-gray" style="font-size:10px;">数値(日)</span></td></tr>
+        <tr><td><span class="col-key">業種8種</span></td><td>業種8種</td><td class="col-desc">8つの大分類（製造・建築・販売・運輸・飲食・その他・医療・理美容）。</td><td><span class="badge badge-blue" style="font-size:10px;">バッジ</span></td></tr>
+        <tr><td><span class="col-key">産業分類</span></td><td>産業分類</td><td class="col-desc">より詳細な産業分類（全239種）。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+        <tr><td><span class="col-key">職種</span></td><td>職種</td><td class="col-desc">具体的な職種・職務内容の名称。</td><td><span class="badge badge-gray" style="font-size:10px;">テキスト</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── SECTION 5: バッジ ── -->
+  <section class="section" id="sec5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">バッジ表示の見方</div>
+    </div>
+
+    <p style="font-size:14px; color:var(--text2); margin-bottom:20px; line-height:1.7;">「賞与」「週休２日制」「業種8種」の3カラムは、視認性を高めるためカラーバッジで表示されます。</p>
+
+    <table class="badge-table">
+      <thead>
+        <tr>
+          <th>カラム</th>
+          <th>バッジ</th>
+          <th>意味</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3" style="font-weight:600; color:var(--text); vertical-align:top; padding-top:16px;">賞与</td>
+          <td><span class="badge badge-green">あり</span></td>
+          <td>賞与（ボーナス）が支給されます</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">なし</span></td>
+          <td>賞与の支給はありません</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-gray">—</span></td>
+          <td>情報なし・未入力</td>
+        </tr>
+        <tr>
+          <td rowspan="3" style="font-weight:600; color:var(--text); vertical-align:top; padding-top:16px; border-top:1px solid var(--border);">週休２日制</td>
+          <td><span class="badge badge-green">毎週</span></td>
+          <td>毎週2日の休日が保障されます</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-yellow">その他</span></td>
+          <td>月によって週休2日でない場合あり</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">なし</span></td>
+          <td>週休2日制の適用なし</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600; color:var(--text); border-top:1px solid var(--border);">業種8種</td>
+          <td><span class="badge badge-blue">製造分野</span> など</td>
+          <td>8つの業種分類を色違いのシアンバッジで表示</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── SECTION 6: 帳票形式 ── -->
+  <section class="section" id="sec6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">帳票形式（スマートフォン向け）</div>
+    </div>
+
+    <div class="highlight">
+      スマートフォンなど小画面での閲覧に適した<strong>カード（帳票）形式</strong>に切り替えられます。ヘッダーの「📊 帳票形式」ボタンをクリックしてください。
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">ヘッダーの「帳票形式」ボタンをクリック</div>
+          <div class="step-desc">ボタンのアイコンと文字が変わり、テーブル表示からカード表示に切り替わります。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">カード形式で求人情報を確認</div>
+          <div class="step-desc">1件ずつカード状に表示されます。各カードに事業所名・賞与・週休区分・月額賃金・業種などの主要情報がレイアウトされています。</div>
+          <div class="callout success">
+            <span class="callout-icon">✅</span>
+            <span>帳票形式でもページネーション・検索・ソートはすべて同様に機能します。</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left">
+          <div class="step-circle">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">「テーブル形式」ボタンで元に戻す</div>
+          <div class="step-desc">再度ボタンをクリックすると通常のテーブル表示に戻ります。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7: ページ操作 ── -->
+  <section class="section" id="sec7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title">ページ操作</div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon blue">«»</div>
+        <h3>先頭・末尾へ</h3>
+        <p><span class="kbd">«</span> で1ページ目、<span class="kbd">»</span> で最終ページへジャンプします。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon green">‹›</div>
+        <h3>前後のページへ</h3>
+        <p><span class="kbd">‹</span> で前のページ、<span class="kbd">›</span> で次のページへ移動します。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon purple">1 2 3</div>
+        <h3>ページ番号</h3>
+        <p>ページ番号ボタンを直接クリックしてそのページへジャンプします。現在のページは強調表示されます。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon warn">→</div>
+        <h3>ページジャンプ</h3>
+        <p>フッター右端の入力欄にページ番号を入力して <span class="kbd">Enter</span> で指定のページへ直接移動できます。</p>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <span>1ページあたり50件表示です。全2,949件の場合は<strong style="color:var(--text);">59ページ</strong>になります。検索で絞り込むとページ数も減少します。</span>
+    </div>
+  </section>
+
+  <!-- ── SECTION 8: FAQ ── -->
+  <section class="section" id="sec8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title">よくある質問</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">求人番号で検索するとき「46080」と入力したら件数が減りすぎました <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">求人番号は「前方一致」検索です。「46080-85」のように途中まで入力すると、その番号で始まる求人のみが表示されます。安定所コードごとに絞り込む場合は「46080」（大隅）のように入力してください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">業種8種を選んでも産業分類が連動しません <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">業種8種と産業分類はそれぞれ独立したフィルターです。両方を同時に設定するとAND条件で絞り込まれます。業種8種を選んだあとに産業分類をプルダウンで選択してください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">列の幅を広げたら他の列が見えなくなりました <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">テーブルは横スクロールに対応しています。テーブル下部（またはマウスのホイール）で横スクロールすると隠れた列を確認できます。列幅を元に戻したい場合はページをリロード（再読み込み）してください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">月額賃金でソートしても同じ金額の求人の順序がバラバラです <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">同じ値の行については、元の独自番号順を維持した安定したソートが行われます。完全に特定の順序にしたい場合は、さらに別の列でソートを掛け直してください。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">絞り込み後にソートするとページが1ページ目に戻ります <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">ソートや検索条件変更の際はページが自動的に1ページ目にリセットされます。これはソート結果全体を最初から確認できるようにするための仕様です。</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">スマートフォンでテーブルが見づらいです <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">ヘッダーの「帳票形式」ボタンをタップしてカード表示に切り替えてください。カード形式はスマートフォン向けに最適化されており、全項目を縦並びで確認できます。</div>
+    </div>
+  </section>
+
+</div><!-- /main -->
+
+<button class="back-top" id="backTop" title="ページトップへ">↑</button>
+
+<script>
+// Nav highlight
+const secs = ['sec1','sec2','sec3','sec4','sec5','sec6','sec7','sec8'];
+const navItems = document.querySelectorAll('.nav-item');
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const id = item.dataset.sec;
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY + 100;
+  let current = secs[0];
+  secs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollY) current = id;
+  });
+  navItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.sec === current);
+  });
+
+  const btn = document.getElementById('backTop');
+  btn.classList.toggle('show', window.scrollY > 400);
+});
+
+document.getElementById('backTop').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// FAQ
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    item.classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>
